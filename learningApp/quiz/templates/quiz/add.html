@@ -1,0 +1,15 @@
+{% extends 'quiz/base.html' %}
+
+{% block content %}
+<table>
+    <form action="" method="post">
+        {% csrf_token %}
+        {{question_form}}
+        <table>
+            {{ answer_form.as_table }}
+        </table>
+
+        <input type="submit" value="dodaj">
+    </form>
+</table>
+{% endblock %}
