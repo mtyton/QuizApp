@@ -2,4 +2,7 @@
 
 {% block content %}
 <h1>{{quiz.title}}</h1>
+{% for question in questions %}
+<h3>{{question.text}}</h3>
+{% endfor %}
 {% endblock %}

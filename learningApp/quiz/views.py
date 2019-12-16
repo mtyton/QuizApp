@@ -45,13 +45,15 @@ class RegisterView(View):
         if request.POST:
             form = RegisterForm(request.POST)
             if form.is_valid():
-                username = form['login']
-                password = form['password']
-                confirmation = form['confirmation']
-                email = form['email']
+                username = form['login'].data
+                password = form['password'].data
+                confirmation = form['confirmation'].data
+                email = form['email'].data
                 if password == confirmation:
                     new_user = User.objects.create_user(username=username, email=email, password=password)
                     return redirect(reverse('index'))
+                else:
+                    return render(request, "quiz/register.html", context={'form': form})
             else:
                 render(request, 'quiz/create.html', context={'form': form})
         else:
@@ -105,14 +107,15 @@ class AddQAView(View):
             quiz = Quiz.objects.get(id=pk)
             question_form = AddQuestionForm(request.POST)
             if question_form.is_valid():
-                question = Question.objects.create(text=question_form['text'], quiz=quiz)
+                question = Question.objects.create(text=question_form['text'].value, quiz=quiz)
                 answer_form = AddAnswerToQuestionForm(request.POST)
                 if answer_form.is_valid():
                     answers = self.get_ans(answer_form)
                     for ans in answers:
-                        obj_ans = Answer.objects.create(ans_text=ans['text'], correct=ans['correct'], question=question)
+                        obj_ans = Answer.objects.create(ans_text=ans['text'], correct=ans['correct'],
+                                                        question=question)
                         obj_ans.save()
-                if request.session['curr_len'] == 0:
+                if request.session['curr_len'] > 0:
                     return redirect((reverse("index")))
                 else:
                     question_form = AddQuestionForm()
@@ -147,8 +150,8 @@ class QuizListView(View):
 
 class PlayView(View):
     def get(self, request, pk):
-        quiz = Quiz.objects.get(id=pk)
-        questions = Question.objects.get(quiz=quiz.id).all()
-        context = {"quiz": quiz, "questions":questions}
+        quiz = Quiz.objects.filter(id=pk).first()
+        questions = Question.objects.filter(quiz=quiz)
+        context = {"quiz": quiz, "questions": questions}
         return render(request, "quiz/play.html", context=context)
 
