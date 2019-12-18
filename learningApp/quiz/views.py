@@ -107,12 +107,12 @@ class AddQAView(View):
             quiz = Quiz.objects.get(id=pk)
             question_form = AddQuestionForm(request.POST)
             if question_form.is_valid():
-                question = Question.objects.create(text=question_form['text'].value, quiz=quiz)
+                question = Question.objects.create(text=question_form['text'].data, quiz=quiz)
                 answer_form = AddAnswerToQuestionForm(request.POST)
                 if answer_form.is_valid():
                     answers = self.get_ans(answer_form)
                     for ans in answers:
-                        obj_ans = Answer.objects.create(ans_text=ans['text'], correct=ans['correct'],
+                        obj_ans = Answer.objects.create(ans_text=ans['text'], correct=ans['correct'].data,
                                                         question=question)
                         obj_ans.save()
                 if request.session['curr_len'] > 0:

@@ -23,6 +23,6 @@ class DBTest(TestCase):
         questions = Question.objects.all()
         self.assertEqual(len(questions), 2)
 
-
     def test_get_ans_for_question(self):
-        pass
+        quiz = Quiz.objects.create()
+        question = Question.objects.create()

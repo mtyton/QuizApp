@@ -18,6 +18,10 @@ class Question(models.Model):
     def __str__(self):
         return self.text
 
+    def get_related_answers(self):
+        answers = Answer.objects.filter(question=self)
+        return answers
+
 
 class Answer(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)

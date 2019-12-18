@@ -41,3 +41,7 @@ class RegisterForm(forms.Form):
 class LoginForm(forms.Form):
     login = forms.CharField(max_length=50)
     password = forms.CharField(max_length=50, widget=forms.PasswordInput)
+
+
+class PlayForm(forms.Form):
+    title = forms.Fiel

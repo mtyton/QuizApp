@@ -4,5 +4,9 @@
 <h1>{{quiz.title}}</h1>
 {% for question in questions %}
 <h3>{{question.text}}</h3>
+    {% for ans in question.get_related_answers %}
+        <p>{{ans.ans_text}}</p>
+    {% endfor %}
+
 {% endfor %}
 {% endblock %}
