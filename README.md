@@ -9,7 +9,7 @@ Very simple app made to create and play quizes
 * Python3
 ### Running in debuging purpose:
 Best way is to create virtualenv:
-* https://gist.github.com/Geoyi/d9fab4f609e9f75941946be45000632b
+* https://gist.github.com/Geoyi/d9fab4f609e9f75941946be45000632b  
 After activating your virtualenv simply install Django
 * For python3
 ```
