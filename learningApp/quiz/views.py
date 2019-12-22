@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import login, logout, authenticate
 from .models import Quiz, Question, Answer
 from .forms import QuizCreateForm, RegisterForm, LoginForm, AddQuestionForm, AddAnswerToQuestionForm
+from django.core.paginator import Paginator
 
 
 class IndexView(View):
@@ -112,10 +113,10 @@ class AddQAView(View):
                 if answer_form.is_valid():
                     answers = self.get_ans(answer_form)
                     for ans in answers:
-                        obj_ans = Answer.objects.create(ans_text=ans['text'], correct=ans['correct'].data,
+                        obj_ans = Answer.objects.create(ans_text=ans['text'], correct=ans['correct'],
                                                         question=question)
                         obj_ans.save()
-                if request.session['curr_len'] > 0:
+                if request.session['curr_len'] == 1:
                     return redirect((reverse("index")))
                 else:
                     question_form = AddQuestionForm()
@@ -143,6 +144,7 @@ class QuizListView(View):
     def get(self, request):
         if request.user.is_authenticated:
             quizes = Quiz.objects.all()
+            request.session['point'] = 0
             return render(request, "quiz/choose.html", context={'quiz_list':quizes})
         else:
             return redirect("index")
@@ -150,8 +152,27 @@ class QuizListView(View):
 
 class PlayView(View):
     def get(self, request, pk):
-        quiz = Quiz.objects.filter(id=pk).first()
-        questions = Question.objects.filter(quiz=quiz)
-        context = {"quiz": quiz, "questions": questions}
-        return render(request, "quiz/play.html", context=context)
+        return self.generate_page(request, pk)
 
+    def post(self, request, pk):
+        msg=""
+        id = request.POST.get("choice")
+        answer = Answer.objects.get(id=id)
+        if answer.correct:
+            msg = "Your Answer was correct"
+            request.session['point'] += 1
+        else:
+            msg="Your Answer was wrong"
+        return self.generate_page(request, pk, msg, True)
+
+    def generate_page(self, request, pk, message="please answer the Question", answered=False):
+        if request.user.is_authenticated:
+            quiz = Quiz.objects.filter(id=pk).first()
+            question_list = Question.objects.filter(quiz=quiz)
+            paginator = Paginator(question_list, 1)
+            page = request.GET.get('page')
+            questions = paginator.get_page(page)
+            context = {"quiz": quiz, "questions": questions, 'answered':answered, 'msg':message}
+            return render(request, "quiz/play.html", context=context)
+        else:
+            return redirect(reverse("index"))

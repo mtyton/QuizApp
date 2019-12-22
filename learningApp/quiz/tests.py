@@ -26,3 +26,4 @@ class DBTest(TestCase):
     def test_get_ans_for_question(self):
         quiz = Quiz.objects.create()
         question = Question.objects.create()
+        answers = question.get_related_answers()

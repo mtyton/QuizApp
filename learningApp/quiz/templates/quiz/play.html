@@ -3,10 +3,42 @@
 {% block content %}
 <h1>{{quiz.title}}</h1>
 {% for question in questions %}
+<h3>{{msg}}</h3>
 <h3>{{question.text}}</h3>
-    {% for ans in question.get_related_answers %}
-        <p>{{ans.ans_text}}</p>
-    {% endfor %}
+    <form action=""  method="POST">
+        {% csrf_token %}
+        {% for ans in question.get_related_answers %}
+            {% if not answered %}
+                <p> <input type="radio" name="choice" value={{ans.id}}> {{ans.ans_text}}</p>
+            {% else %}
+                {% if ans.correct %}
+                    <span style="color:green"><p>{{ans.ans_text}}</p></span>
+                {% else %}
+                    <span style="color:red"><p>{{ans.ans_text}}</p></span>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+        {% if not answered %}
+            <input type="submit" value="check">
+        {% endif %}
+    </form>
 
 {% endfor %}
+
+    {% if answered %}
+        {% if questions.has_next %}
+            <a href="?page={{questions.next_page_number}}">
+                <input type="button" value="next">
+            </a>
+        {% endif %}
+    {% endif %}
+<script>
+$(document).ready(function(){
+ $(p)(function(){
+   $(this).css('background-color', 'green');
+ });
+});
+
+
+</script>
 {% endblock %}
