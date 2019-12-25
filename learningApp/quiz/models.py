@@ -30,3 +30,9 @@ class Answer(models.Model):
 
     def __str__(self):
         return "Answer {}, correctable {}, question {}".format(self.ans_text, self.correct, self.ans_text)
+
+
+class Score(models.Model):
+    points = models.IntegerField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
+    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, default=None)

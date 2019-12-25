@@ -30,6 +30,8 @@
             <a href="?page={{questions.next_page_number}}">
                 <input type="button" value="next">
             </a>
+        {% else %}
+            <a href="{% url 'quizScore' quiz.id %}"><input type="button" value="See Score"></a>
         {% endif %}
     {% endif %}
 <script>

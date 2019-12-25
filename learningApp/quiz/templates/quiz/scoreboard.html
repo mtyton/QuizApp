@@ -1,0 +1,10 @@
+{% extends 'quiz/base.html' %}
+
+{% block content %}
+<tab>
+    {% for score in scores %}
+        <tr><td>{{score.points}}</td></tr>
+    {% endfor %}
+</tab>
+
+{% endblock %}

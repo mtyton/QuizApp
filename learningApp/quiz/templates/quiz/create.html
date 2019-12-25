@@ -5,7 +5,9 @@
     <form action="" method="post">
         {% csrf_token %}
         {{form.as_table}}
-        <input type="submit" value="Create Quiz">
+        <tr>
+            <td><input type="submit" value="Create Quiz"></td>
+        </tr>
     </form>
 
 </table>

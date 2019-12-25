@@ -4,12 +4,12 @@
 <table>
     <form action="" method="post">
         {% csrf_token %}
-        {{question_form}}
-        <table>
+            {{question_form.as_table}}
+        <tr><td colspan="2"><b>ANSWERS: </b></td></tr>
             {{ answer_form.as_table }}
-        </table>
-
-        <input type="submit" value="dodaj">
+        <tr>
+            <td colspan="2"><input type="submit" value="dodaj"></td>
+        </tr>
     </form>
 </table>
 {% endblock %}

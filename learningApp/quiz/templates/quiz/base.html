@@ -1,5 +1,8 @@
 <html>
 <head>
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="HandheldFriendly" content="true">
     <title>MQuiz</title>
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{%static 'quiz/style.css' %}">
@@ -13,12 +16,18 @@
                 <li class ="nav_content"><a href="{% url 'register' %}">Register</a></li>
                 <li class ="nav_content"><a href="{% url 'login' %}">Login</a></li>
             {% else %}
+                <li><a href="{% url 'create' %}">Create</a></li>
+                <li><a href="{% url 'list_view'%}">Play</a></li>
+                <li><a href="{% url 'scoreboard' %}">Scoreboard</a></li>
                 <li class ="nav_content"><a href="{% url 'logout' %}">Logout</a></li>
             {% endif %}
         </ul>
     </nav>
-{% block content %}
+    <div class="content">
+        {% block content %}
 
-{% endblock %}
+        {% endblock %}
+    </div>
+
 </body>
 </html>

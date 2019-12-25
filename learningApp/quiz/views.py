@@ -3,9 +3,10 @@ from django.http import HttpResponse
 from django.views.generic import View
 from django.contrib.auth.models import User
 from django.contrib.auth import login, logout, authenticate
-from .models import Quiz, Question, Answer
+from .models import Quiz, Question, Answer, Score
 from .forms import QuizCreateForm, RegisterForm, LoginForm, AddQuestionForm, AddAnswerToQuestionForm
 from django.core.paginator import Paginator
+from django.core.exceptions import ObjectDoesNotExist
 
 
 class IndexView(View):
@@ -155,15 +156,19 @@ class PlayView(View):
         return self.generate_page(request, pk)
 
     def post(self, request, pk):
-        msg=""
-        id = request.POST.get("choice")
-        answer = Answer.objects.get(id=id)
-        if answer.correct:
-            msg = "Your Answer was correct"
-            request.session['point'] += 1
-        else:
-            msg="Your Answer was wrong"
-        return self.generate_page(request, pk, msg, True)
+        try:
+            msg=""
+            id = request.POST.get("choice")
+            answer = Answer.objects.get(id=id)
+            if answer.correct:
+                msg = "Your Answer was correct"
+                request.session['point'] += 1
+            else:
+                msg = "Your Answer was wrong"
+            return self.generate_page(request, pk, msg, True)
+        except (ValueError, ObjectDoesNotExist):
+            msg="Please Check one Answer"
+            return self.generate_page(request, pk, msg)
 
     def generate_page(self, request, pk, message="please answer the Question", answered=False):
         if request.user.is_authenticated:
@@ -176,3 +181,31 @@ class PlayView(View):
             return render(request, "quiz/play.html", context=context)
         else:
             return redirect(reverse("index"))
+
+
+class ScoreView(View):
+    def get(self, request, pk):
+        if request.user.is_authenticated:
+            score = request.session['point']
+            context = {'score': score}
+            return render(request, 'quiz/user_score.html', context=context)
+        else:
+            return redirect(reverse('login'))
+
+
+class ScoreBoardView(View):
+    def get(self, request):
+        if request.user.is_authenticated:
+            scores_list = Score.objects.all()
+            paginator = Paginator(scores_list, 1)
+            page = request.GET.get("page")
+            scores = paginator.get_page(page)
+            context = {'scores':scores}
+            return render(request, "quiz/scoreboard.html", context=context)
+        else:
+            return redirect(reverse("index"))
+
+
+class ProfilePageView(View):
+    def get(self, request):
+        pass
