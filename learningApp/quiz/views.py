@@ -1,4 +1,8 @@
 from django.shortcuts import render, redirect, reverse
+from rest_framework.views import APIView
+from rest_framework.renderers import TemplateHTMLRenderer, BrowsableAPIRenderer
+from rest_framework import filters
+from rest_framework.response import Response
 from django.http import HttpResponse
 from django.views.generic import View
 from django.contrib.auth.models import User
@@ -7,6 +11,7 @@ from .models import Quiz, Question, Answer, Score
 from .forms import QuizCreateForm, RegisterForm, LoginForm, AddQuestionForm, AddAnswerToQuestionForm
 from django.core.paginator import Paginator
 from django.core.exceptions import ObjectDoesNotExist
+from .serializer import ScoreSerializer
 
 
 class IndexView(View):
@@ -186,22 +191,28 @@ class PlayView(View):
 class ScoreView(View):
     def get(self, request, pk):
         if request.user.is_authenticated:
+            quiz = Quiz.objects.filter(id=pk).first()
             score = request.session['point']
+            obj_score = Score(quiz=quiz, points=score, user=request.user)
+            obj_score.save()
             context = {'score': score}
             return render(request, 'quiz/user_score.html', context=context)
         else:
             return redirect(reverse('login'))
 
 
-class ScoreBoardView(View):
+class ScoreBoardView(APIView):
+    renderer_classes = [TemplateHTMLRenderer, BrowsableAPIRenderer]
+    template_name = 'quiz/scoreboard.html'
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['user.username', 'quiz.title']
+
     def get(self, request):
         if request.user.is_authenticated:
             scores_list = Score.objects.all()
-            paginator = Paginator(scores_list, 1)
-            page = request.GET.get("page")
-            scores = paginator.get_page(page)
+            scores = ScoreSerializer(scores_list, many=True)
             context = {'scores':scores}
-            return render(request, "quiz/scoreboard.html", context=context)
+            return Response(context)
         else:
             return redirect(reverse("index"))
 

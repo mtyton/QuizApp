@@ -1,10 +1,11 @@
 {% extends 'quiz/base.html' %}
 
 {% block content %}
-<tab>
-    {% for score in scores %}
-        <tr><td>{{score.points}}</td></tr>
+<table border="2px">
+    <tr><td>User: </td><td>Quiz Name: </td><td>Points: </td></tr>
+    {% for score in scores.data %}
+        <tr><td>{{score.user.username}}</td><td>{{score.quiz.title}}</td><td>{{score.points}}</td></tr>
     {% endfor %}
-</tab>
+</table>
 
 {% endblock %}
