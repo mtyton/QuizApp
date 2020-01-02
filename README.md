@@ -2,9 +2,6 @@
 Very simple app made to create and play quizes
 # TODO
 *Create Personal user Scoreboard
-# HOW TO RUN IT?
-##This is a not realease version, here I describe how to run in a Debug mode
-
 ### Modules You need to run:
 * Django >= 3.0
 * Python3
@@ -20,3 +17,7 @@ After that simply get to the 'learningApp' module and type:
 ```
 python3 manage.py runserver
 ```
+# What is it about?
+The main goal of this app is t create quiz and play them.
+To create quiz you need to login.
+If you don't have an account you should get registred
