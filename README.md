@@ -1,9 +1,10 @@
 # QuizApp
 Very simple app made to create and play quizes
 # TODO
-* Make the play view work finally
-* Make some kind of a scoreboard
+*Create Personal user Scoreboard
 # HOW TO RUN IT?
+##This is a not realease version, here I describe how to run in a Debug mode
+
 ### Modules You need to run:
 * Django >= 3.0
 * Python3
